@@ -1,27 +1,26 @@
-// import React, { useState, useEffect } from "react";
-// import { Alert } from "react-native";
+import { useState, useEffect, MouseEventHandler } from "react";
 
-// import { Container } from "./styles";
-
-// import params from "../../utils/params";
-// import Board from "../../components/Board";
+import { Board } from "../../components/Board";
 // import Header from "../../components/Header";
 // import LevelSelect from "../LevelSelect";
 // import Menu from "../Menu";
-// import { appThemes } from "../../themes";
-// import {
-//   createMinedBoard,
-//   cloneBoard,
-//   openField,
-//   toggleFlag,
-//   openRemainingNeighbors,
-//   hadExplosion,
-//   wonGame,
-//   showMines,
-//   flagsUsed,
-//   giveSecondaryHint,
-//   boardType,
-// } from "../../utils/logic";
+
+import params from "../../utils/params";
+import {
+  createMinedBoard,
+  cloneBoard,
+  openField,
+  toggleFlag,
+  openRemainingNeighbors,
+  hadExplosion,
+  wonGame,
+  showMines,
+  flagsUsed,
+  Board as BoardObj,
+} from "../../utils/logic";
+
+import styles from "./styles.module.css";
+
 // import {
 //   saveGame,
 //   saveSetting,
@@ -31,214 +30,202 @@
 // } from "../../utils/saveData";
 // import Snackbar from "react-native-snackbar";
 
-// export default ({ setTheme }: { setTheme: Function }) => {
-//   let didLoadBoard = false;
+export const MineBoard = () => {
+  let didLoadBoard = false;
 
-//   const minesQuantity = () => {
-//     const rows = params.getRowsAmount();
-//     const cols = params.getColumnsAmount();
-//     return Math.ceil(rows * cols * params.mineDensity);
-//   };
+  const minesQuantity = () => {
+    const rows = params.getRowsAmount();
+    const cols = params.getColumnsAmount();
+    return Math.ceil(rows * cols * params.mineDensity);
+  };
 
-//   const newBoard = () =>
-//     createMinedBoard(
-//       params.getRowsAmount(),
-//       params.getColumnsAmount(),
-//       minesQuantity()
-//     );
+  const newBoard = () =>
+    createMinedBoard(
+      params.getRowsAmount(),
+      params.getColumnsAmount(),
+      minesQuantity()
+    );
 
-//   const [board, setBoard] = useState(newBoard());
-//   const [won, setWon] = useState(false);
-//   const [lost, setLost] = useState(false);
-//   const [showLevels, setShowLevels] = useState(false);
-//   const [showMenu, setShowMenu] = useState(false);
+  const [board, setBoard] = useState(newBoard());
+  const [won, setWon] = useState(false);
+  const [lost, setLost] = useState(false);
+  const [showLevels, setShowLevels] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
 
-//   // load game or pass on first render
-//   useEffect(() => {
-//     loadData(loadBoard, loadSettings);
-//   }, []);
+  //load game or pass on first render
+  //   useEffect(() => {
+  //     loadData(loadBoard, loadSettings);
+  //   }, []);
 
-//   const gameOver = (status: "win" | "lose") => {
-//     const title = status == "win" ? "Você Venceu!" : "Você Perdeu!";
-//     const message =
-//       (status == "win" ? "Parabéns! " : "Que Pena!") +
-//       "\nDeseja iniciar um novo jogo?";
-//     const buttons = [{ text: "Não" }, { text: "Sim", onPress: newGame }];
+  const gameOver = (status: "win" | "lose") => {
+    const title = status == "win" ? "Você Venceu!" : "Você Perdeu!";
+    const message =
+      (status == "win" ? "Parabéns! " : "Que Pena!") +
+      "\nDeseja iniciar um novo jogo?";
+    // const buttons = [{ text: "Não" }, { text: "Sim", onPress: newGame }];
 
-//     setTimeout(() => {
-//       Alert.alert(title, message, buttons);
-//     }, 500);
-//   };
+    setTimeout(() => {
+      alert(title + message);
+    }, 500);
+  };
 
-//   const newGame = () => {
-//     setBoard(newBoard());
-//     setWon(false);
-//     setLost(false);
-//     didLoadBoard = false;
-//   };
+  const newGame = () => {
+    setBoard(newBoard());
+    setWon(false);
+    setLost(false);
+    didLoadBoard = false;
+  };
 
-//   const onOpenField = (row: number, column: number): void => {
-//     if (won || lost) return;
+  const onLeftClick = (row: number, column: number): void => {
+    if (won || lost) return;
 
-//     const boardClone = cloneBoard(board);
-//     openField(boardClone, row, column);
-//     const hasLost = hadExplosion(boardClone);
-//     const hasWon = wonGame(boardClone);
+    const boardClone = cloneBoard(board);
+    openField(boardClone, row, column);
+    const hasLost = hadExplosion(boardClone);
+    const hasWon = wonGame(boardClone);
 
-//     if (hasLost) {
-//       showMines(boardClone);
-//       gameOver("lose");
-//     }
-//     if (hasWon) {
-//       gameOver("win");
-//     }
+    if (hasLost) {
+      showMines(boardClone);
+      gameOver("lose");
+    }
+    if (hasWon) {
+      gameOver("win");
+    }
 
-//     setBoard(boardClone);
-//     setLost(hasLost);
-//     setWon(hasWon);
-//   };
+    setBoard(boardClone);
+    setLost(hasLost);
+    setWon(hasWon);
+  };
 
-//   const onHoldField = (row: number, column: number): void => {
-//     if (won || lost) return;
+  const onRightClick = (
+    row: number,
+    column: number,
+    event: React.MouseEvent<HTMLElement, MouseEvent>
+  ): void => {
+    event.preventDefault();
+    if (won || lost) return;
 
-//     const boardClone = cloneBoard(board);
-//     if (board[row][column].opened)
-//       openRemainingNeighbors(boardClone, row, column);
-//     else toggleFlag(boardClone, row, column);
+    const boardClone = cloneBoard(board);
+    if (board[row][column].state === "opened")
+      openRemainingNeighbors(boardClone, row, column);
+    else toggleFlag(boardClone, row, column);
 
-//     const hasWon = wonGame(boardClone);
-//     const hasLost = hadExplosion(boardClone);
+    const hasWon = wonGame(boardClone);
+    const hasLost = hadExplosion(boardClone);
 
-//     if (hasWon) {
-//       gameOver("win");
-//     }
+    if (hasWon) {
+      gameOver("win");
+    }
 
-//     if (hasLost) {
-//       showMines(boardClone);
-//       gameOver("lose");
-//     }
+    if (hasLost) {
+      showMines(boardClone);
+      gameOver("lose");
+    }
 
-//     setBoard(boardClone);
-//     setWon(hasWon);
-//     setLost(hasLost);
-//   };
+    setBoard(boardClone);
+    setWon(hasWon);
+    setLost(hasLost);
+  };
 
-//   const onLevelSelected = (level: number) => {
-//     if (level === params.mineDensity) {
-//       setShowLevels(false);
-//       return;
-//     }
+  //   const onLevelSelected = (level: number) => {
+  //     if (level === params.mineDensity) {
+  //       setShowLevels(false);
+  //       return;
+  //     }
 
-//     params.mineDensity = level;
-//     setShowLevels(false);
-//     newGame();
-//   };
+  //     params.mineDensity = level;
+  //     setShowLevels(false);
+  //     newGame();
+  //   };
 
-//   const onThemeSelected = (theme: appThemes) => {
-//     params.theme = theme;
-//     setTheme(theme);
-//     setShowMenu(false);
-//   };
+  const loadBoard = (data: { board: BoardObj; mineDensity: number }) => {
+    didLoadBoard = true;
+    params.mineDensity = data.mineDensity;
+    setBoard(data.board);
+  };
 
-//   const onGiveSecondaryHint = () => {
-//     if (won || lost) return;
+  //   const loadSettings = ({
+  //     theme,
+  //     mineDensity,
+  //   }: {
+  //     theme: appThemes;
+  //     mineDensity: number;
+  //   }) => {
+  //     params.theme = theme;
+  //     setTheme(theme);
 
-//     const boardClone = cloneBoard(board);
-//     giveSecondaryHint(boardClone);
+  //     if (!didLoadBoard) {
+  //       params.mineDensity = mineDensity;
+  //       setBoard(newBoard);
+  //     }
+  //   };
 
-//     setBoard(boardClone);
-//     setShowMenu(false);
-//   };
+  //   const onSaveGame = async () => {
+  //     if (await saveGame({ board, mineDensity: params.mineDensity }))
+  //       Snackbar.show({
+  //         text: "Jogo Salvo!",
+  //         duration: Snackbar.LENGTH_SHORT,
+  //       });
+  //   };
 
-//   const loadBoard = (data: { board: boardType; mineDensity: number }) => {
-//     didLoadBoard = true;
-//     params.mineDensity = data.mineDensity;
-//     setBoard(data.board);
-//   };
+  //   const onSaveSetting = async () => {
+  //     if (
+  //       await saveSetting({
+  //         theme: params.theme,
+  //         mineDensity: params.mineDensity,
+  //       })
+  //     )
+  //       Snackbar.show({
+  //         text: "Preferências Salvas!",
+  //         duration: Snackbar.LENGTH_SHORT,
+  //       });
+  //   };
 
-//   const loadSettings = ({
-//     theme,
-//     mineDensity,
-//   }: {
-//     theme: appThemes;
-//     mineDensity: number;
-//   }) => {
-//     params.theme = theme;
-//     setTheme(theme);
+  //   const onDeleteGame = async () => {
+  //     if (await deleteGame())
+  //       Snackbar.show({
+  //         text: "Jogo Excluído!",
+  //         duration: Snackbar.LENGTH_SHORT,
+  //       });
+  //   };
 
-//     if (!didLoadBoard) {
-//       params.mineDensity = mineDensity;
-//       setBoard(newBoard);
-//     }
-//   };
+  //   const onDeleteSetting = async () => {
+  //     if (await deleteSetting())
+  //       Snackbar.show({
+  //         text: "Preferências Excluídas!",
+  //         duration: Snackbar.LENGTH_SHORT,
+  //       });
+  //   };
 
-//   const onSaveGame = async () => {
-//     if (await saveGame({ board, mineDensity: params.mineDensity }))
-//       Snackbar.show({
-//         text: "Jogo Salvo!",
-//         duration: Snackbar.LENGTH_SHORT,
-//       });
-//   };
-
-//   const onSaveSetting = async () => {
-//     if (
-//       await saveSetting({
-//         theme: params.theme,
-//         mineDensity: params.mineDensity,
-//       })
-//     )
-//       Snackbar.show({
-//         text: "Preferências Salvas!",
-//         duration: Snackbar.LENGTH_SHORT,
-//       });
-//   };
-
-//   const onDeleteGame = async () => {
-//     if (await deleteGame())
-//       Snackbar.show({
-//         text: "Jogo Excluído!",
-//         duration: Snackbar.LENGTH_SHORT,
-//       });
-//   };
-
-//   const onDeleteSetting = async () => {
-//     if (await deleteSetting())
-//       Snackbar.show({
-//         text: "Preferências Excluídas!",
-//         duration: Snackbar.LENGTH_SHORT,
-//       });
-//   };
-
-//   return (
-//     <Container>
-//       <Menu
-//         isVisible={showMenu}
-//         onCancel={() => setShowMenu(false)}
-//         onThemeSelected={onThemeSelected}
-//         onSaveGame={onSaveGame}
-//         onSaveSetting={onSaveSetting}
-//         onDeleteGame={onDeleteGame}
-//         onDeleteSetting={onDeleteSetting}
-//         onGiveHint={onGiveSecondaryHint}
-//       />
-//       <LevelSelect
-//         isVisible={showLevels}
-//         onLevelSelected={onLevelSelected}
-//         onCancel={() => setShowLevels(false)}
-//       />
-//       <Header
-//         flagsLeft={minesQuantity() - flagsUsed(board)}
-//         onNewGame={newGame}
-//         onNewGameLongPress={() => loadData(loadBoard, loadSettings)}
-//         onFlagPress={() => setShowLevels(true)}
-//         onMenu={() => setShowMenu(true)}
-//       />
-//       <Board
-//         board={board}
-//         onOpenField={onOpenField}
-//         onHoldField={onHoldField}
-//       />
-//     </Container>
-//   );
-// };
-export {};
+  return (
+    <div className={styles.container}>
+      {/* <Menu
+        isVisible={showMenu}
+        onCancel={() => setShowMenu(false)}
+        onThemeSelected={onThemeSelected}
+        onSaveGame={onSaveGame}
+        onSaveSetting={onSaveSetting}
+        onDeleteGame={onDeleteGame}
+        onDeleteSetting={onDeleteSetting}
+        onGiveHint={onGiveSecondaryHint}
+      />
+      <LevelSelect
+        isVisible={showLevels}
+        onLevelSelected={onLevelSelected}
+        onCancel={() => setShowLevels(false)}
+      />
+      <Header
+        flagsLeft={minesQuantity() - flagsUsed(board)}
+        onNewGame={newGame}
+        onNewGameLongPress={() => loadData(loadBoard, loadSettings)}
+        onFlagPress={() => setShowLevels(true)}
+        onMenu={() => setShowMenu(true)}
+      /> */}
+      <Board
+        board={board}
+        onLeftClick={onLeftClick}
+        onRightClick={onRightClick}
+      />
+    </div>
+  );
+};

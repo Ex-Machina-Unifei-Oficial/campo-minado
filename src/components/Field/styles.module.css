@@ -1,7 +1,7 @@
 .label {
   text-align: center;
-  font-weight: bold;
-  font-size: 20px;
+  font-weight: semibold;
+  font-size: 18px;
 }
 
 .closed,
@@ -11,6 +11,7 @@
   border-top-color: #37a2db;
   border-right-color: #1c4966;
   border-bottom-color: #1c4966;
+  border-width: 5px;
 }
 
 .opened {
@@ -23,13 +24,16 @@
 }
 
 .exploded {
+  border-width: 2px;
   background-color: #d40;
   border-color: #b20;
 }
 
 .field {
-  height: 30px;
-  width: 30px;
-  border-width: 5px;
+  min-height: 30px;
+  min-width: 30px;
+  max-height: 30px;
+  max-width: 30px;
   border-style: solid;
+  box-sizing: border-box;
 }

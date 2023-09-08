@@ -1,30 +1,27 @@
-import { MouseEventHandler, useState } from "react";
+import { MouseEventHandler, useEffect, useState } from "react";
 
 import { Flag } from "../Flag";
 import { Mine } from "../Mine";
 
+import { FieldState } from "../../utils/logic";
 import { colors } from "../../utils/colors";
 import styles from "./styles.module.css";
 
-type FieldState = "closed" | "opened" | "flagged";
-
 type FieldProps = {
-  initalState: FieldState;
+  state: FieldState;
   hasMine: boolean;
   nearMines: number;
-  onOpen: MouseEventHandler<HTMLDivElement>;
-  onHold: MouseEventHandler<HTMLDivElement>;
+  onLeftClick: () => void;
+  onRightClick: (e: React.MouseEvent<HTMLElement, MouseEvent>) => void;
 };
 
 export const Field = ({
-  initalState,
+  state,
   nearMines,
   hasMine,
-  onOpen,
-  onHold,
+  onLeftClick,
+  onRightClick,
 }: FieldProps) => {
-  const [state, setState] = useState<FieldState>(initalState);
-
   const getStyle = () => {
     return hasMine && state === "opened" ? "exploded" : state;
   };
@@ -32,8 +29,8 @@ export const Field = ({
   return (
     <div
       className={`${styles.field} ${styles[getStyle()]}`}
-      onClick={onOpen}
-      onDoubleClick={onHold}
+      onClick={onLeftClick}
+      onContextMenu={onRightClick}
     >
       {!hasMine && state == "opened" && nearMines > 0 && (
         <h1

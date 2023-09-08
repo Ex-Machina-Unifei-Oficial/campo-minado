@@ -1,178 +1,168 @@
-type fieldObj = {
-    row: number,
-    column: number,
-    opened: boolean,
-    mined: boolean,
-    nearMines: number,
-    exploded: boolean,
-    flagged: boolean,
-    hinted: boolean,
+export type FieldState = "closed" | "opened" | "flagged";
 
-}
+type Field = {
+  row: number;
+  column: number;
+  state: FieldState;
+  hasMine: boolean;
+  nearMines: number;
+};
 
-type boardType = fieldObj[][]
+type Board = Field[][];
 
-const createBoard = (rows: number, columns: number): boardType => {
-    return Array(rows).fill(0).map((_, row) => {
-        return Array(columns).fill(0).map((_, column) => {
-            return {
-                row,
-                column,
-                opened: false,
-                mined: false,
-                nearMines: 0,
-                exploded: false,
-                flagged: false,
-                hinted: false,
-            }
-        })
-    })
-}
-
-const plantMines = (board: boardType, quantity: number): void => {
-    const rows = board.length
-    const columns = board[0].length
-    let minesPlanted = 0
-
-    while (minesPlanted < quantity) {
-        const row = Math.floor(Math.random() * rows)
-        const col = Math.floor(Math.random() * columns)
-
-        if (!board[row][col].mined) {
-            board[row][col].mined = true
-            minesPlanted++
-        }
-    }
-}
-
-const giveHint = (board: boardType): void => {
-    const rows = board.length
-    const columns = board[0].length
-    const row = Math.floor(Math.random() * rows)
-    const col = Math.floor(Math.random() * columns)
-
-    if (!board[row][col].mined && safeNeighborhood(board, row, col))
-        board[row][col].hinted = true
-    else
-        giveHint(board)
-}
-
-const createMinedBoard = (rows: number, columns: number, minesQuantity: number): boardType => {
-    const board = createBoard(rows, columns)
-    plantMines(board, minesQuantity)
-    giveHint(board)
-
-    return board
-}
-
-const cloneBoard = (board: boardType): boardType => {
-    return board.map(rows => {
-        return rows.map(field => {
-            return { ...field }
-        })
-    })
-}
-
-const getNeighbors = (board: boardType, row: number, column: number): fieldObj[] => {
-    const neighbors: fieldObj[] = []
-    const rows = [row - 1, row, row + 1]
-    const columns = [column - 1, column, column + 1]
-    rows.forEach(r => {
-        columns.forEach(c => {
-            const different = r !== row || c !== column
-            const valid = r >= 0 && r < board.length && c >= 0 && c < board[0].length
-            if (different && valid) neighbors.push(board[r][c])
-        })
+const createBoard = (rows: number, columns: number): Board => {
+  return Array(rows)
+    .fill(0)
+    .map((_, row) => {
+      return Array(columns)
+        .fill(0)
+        .map((_, column) => {
+          return {
+            row,
+            column,
+            state: "closed",
+            hasMine: false,
+            nearMines: 0,
+          };
+        });
     });
+};
 
-    return neighbors
-}
+const plantMines = (board: Board, quantity: number): void => {
+  const rows = board.length;
+  const columns = board[0].length;
+  let minesPlanted = 0;
 
-const safeNeighborhood = (board: boardType, row: number, column: number): boolean => {
-    const checkSafe = (previousSafe: boolean, neighbor: fieldObj) => previousSafe && !neighbor.mined
+  while (minesPlanted < quantity) {
+    const row = Math.floor(Math.random() * rows);
+    const col = Math.floor(Math.random() * columns);
 
-    return getNeighbors(board, row, column).reduce(checkSafe, true)
-}
-
-const openField = (board: boardType, row: number, column: number): void => {
-    const field = board[row][column]
-    if (field.opened || field.flagged) return
-
-    field.opened = true
-
-    if (field.mined) {
-        field.exploded = true
-
-    } else if (safeNeighborhood(board, row, column)) {
-        getNeighbors(board, row, column).forEach(n => {
-            openField(board, n.row, n.column)
-        })
-
-    } else {
-        field.nearMines = getNeighbors(board, row, column).filter(n => n.mined).length
+    if (!board[row][col].hasMine) {
+      board[row][col].hasMine = true;
+      minesPlanted++;
     }
-}
+  }
+};
 
-const toggleFlag = (board: boardType, row: number, column: number): void => {
-    const field = board[row][column]
-    field.flagged = !field.flagged
-}
+const createMinedBoard = (
+  rows: number,
+  columns: number,
+  minesQuantity: number
+): Board => {
+  const board = createBoard(rows, columns);
+  plantMines(board, minesQuantity);
 
-const openRemainingNeighbors = (board: boardType, row: number, column: number): void => {
-    if (board[row][column].nearMines === 0 || getNeighbors(board, row, column)
-        .filter(field => field.flagged).length != board[row][column].nearMines
-    ) return
+  return board;
+};
 
-    getNeighbors(board, row, column).forEach(field => {
-        if (!field.flagged) openField(board, field.row, field.column)
-    })
-}
+const cloneBoard = (board: Board): Board => {
+  return board.map((rows) => {
+    return rows.map((field) => {
+      return { ...field };
+    });
+  });
+};
 
-const fields = (board: boardType): fieldObj[] => {
-    const fieldArray: fieldObj[] = []
-    return fieldArray.concat(...board)
-}
+const getNeighbors = (board: Board, row: number, column: number): Field[] => {
+  const neighbors: Field[] = [];
+  const rows = [row - 1, row, row + 1];
+  const columns = [column - 1, column, column + 1];
+  rows.forEach((r) => {
+    columns.forEach((c) => {
+      const different = r !== row || c !== column;
+      const valid = r >= 0 && r < board.length && c >= 0 && c < board[0].length;
+      if (different && valid) neighbors.push(board[r][c]);
+    });
+  });
 
-const hadExplosion = (board: boardType): boolean => (
-    fields(board).filter(n => n.exploded).length > 0
-)
+  return neighbors;
+};
 
-const giveSecondaryHint = (board: boardType) => {
-    const isAmbiguous = (board: boardType, row: number, column: number) => {
-        const neighbors = getNeighbors(board, row, column)
-        return neighbors.filter(field => (!field.opened && field.mined && !field.flagged)).length === 1
-            && neighbors.filter(field => (!field.opened && !field.mined)).length === 1
-    }
+const safeNeighborhood = (
+  board: Board,
+  row: number,
+  column: number
+): boolean => {
+  const checkSafe = (previousSafe: boolean, neighbor: Field) =>
+    previousSafe && !neighbor.hasMine;
 
-    const ambiguousFields = fields(board).filter(field => field.opened && isAmbiguous(board, field.row, field.column))
-    const selectedField = ambiguousFields[Math.floor(Math.random() * ambiguousFields.length)]
+  return getNeighbors(board, row, column).reduce(checkSafe, true);
+};
 
-    if (selectedField){
-        getNeighbors(board, selectedField.row, selectedField.column).forEach(field => {
-            if (!field.opened && !field.mined) field.hinted = true
-        })
-    }
-}
+const openField = (board: Board, row: number, column: number): void => {
+  const field = board[row][column];
+  if (field.state === "opened" || field.state === "flagged") return;
 
-const pendent = (field: fieldObj): boolean => (field.mined && !field.flagged) || (!field.mined && !field.opened)
+  field.state = "opened";
 
-const wonGame = (board: boardType): boolean => fields(board).filter(pendent).length === 0
+  if (!field.hasMine && safeNeighborhood(board, row, column)) {
+    getNeighbors(board, row, column).forEach((n) => {
+      openField(board, n.row, n.column);
+    });
+  } else {
+    field.nearMines = getNeighbors(board, row, column).filter(
+      (n) => n.hasMine
+    ).length;
+  }
+};
 
-const showMines = (board: boardType): void => fields(board).filter(field => field.mined).forEach(field => field.opened = true)
+const toggleFlag = (board: Board, row: number, column: number): void => {
+  const field = board[row][column];
+  field.state = field.state === "closed" ? "flagged" : "closed";
+};
 
-const flagsUsed = (board: boardType): number => fields(board).filter(field => field.flagged).length
+const openRemainingNeighbors = (
+  board: Board,
+  row: number,
+  column: number
+): void => {
+  if (
+    board[row][column].nearMines === 0 ||
+    getNeighbors(board, row, column).filter(
+      (field) => field.state === "flagged"
+    ).length != board[row][column].nearMines
+  )
+    return;
 
-export type {boardType}
+  getNeighbors(board, row, column).forEach((field) => {
+    if (!(field.state === "flagged")) openField(board, field.row, field.column);
+  });
+};
+
+const fields = (board: Board): Field[] => {
+  const fieldArray: Field[] = [];
+  return fieldArray.concat(...board);
+};
+
+const hadExplosion = (board: Board): boolean =>
+  fields(board).filter((field) => field.hasMine && field.state === "opened")
+    .length > 0;
+
+const pendent = (field: Field): boolean =>
+  (field.hasMine && !(field.state === "flagged")) ||
+  (!field.hasMine && !(field.state === "opened"));
+
+const wonGame = (board: Board): boolean =>
+  fields(board).filter(pendent).length === 0;
+
+const showMines = (board: Board): void =>
+  fields(board)
+    .filter((field) => field.hasMine)
+    .forEach((field) => (field.state = "opened"));
+
+const flagsUsed = (board: Board): number =>
+  fields(board).filter((field) => field.state === "flagged").length;
+
+export type { Board };
 
 export {
-    createMinedBoard,
-    cloneBoard,
-    openField,
-    toggleFlag,
-    openRemainingNeighbors,
-    hadExplosion,
-    wonGame,
-    showMines,
-    flagsUsed,
-    giveSecondaryHint,
-}
+  createMinedBoard,
+  cloneBoard,
+  openField,
+  toggleFlag,
+  openRemainingNeighbors,
+  hadExplosion,
+  wonGame,
+  showMines,
+  flagsUsed,
+};
