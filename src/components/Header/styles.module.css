@@ -1,0 +1,38 @@
+// import styled from 'styled-components/native'
+
+// export const Container = styled.View`
+//     flex: 1;
+//     flex-direction: row;
+//     align-items: center;
+//     justify-content: space-around;
+//     background-color: ${props => props.theme.colors.background};
+//     padding-top: 20px;
+//     padding-bottom: 10px;
+// `
+
+// export const FlagContainer = styled.View`
+//     flex-direction: row;
+//     align-items: center;
+// `
+
+// export const FlagButton = styled.TouchableOpacity`
+//     min-width: 40px;
+//     min-height: 30px;
+// `
+
+// export const Label = styled.Text`
+//     font-size: 25px;
+//     font-weight: bold;
+//     color: ${props => props.theme.colors.textPrimary};
+//     min-width: 50px;
+// `
+
+// export const Button = styled.TouchableOpacity`
+//     padding: 5px;
+//     border-width: 5px;
+//     background-color: ${props => props.theme.colors.primary};
+//     border-left-color: ${props => props.theme.colors.primaryLight};
+//     border-top-color: ${props => props.theme.colors.primaryLight};
+//     border-right-color: ${props => props.theme.colors.primaryDark};
+//     border-bottom-color: ${props => props.theme.colors.primaryDark};
+// `

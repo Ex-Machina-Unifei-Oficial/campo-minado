@@ -1,0 +1,19 @@
+// import styled from 'styled-components/native'
+
+// export const Container = styled.View`
+//     background-color: ${(props: any) => props.theme.colors.background};
+//     justify-content: center;
+//     align-items: center;
+// `
+
+// export const FieldRows = styled.View`
+//     justify-content: center;
+//     align-items: center;
+//     max-height: 99%;
+// `
+
+// export const FieldColumns = styled.View`
+//     flex-direction: row;
+//     align-items: center;
+//     max-width: 99%;
+// `

@@ -1,25 +1,48 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import "./App.css";
+import { Field } from "./components/Field";
+import { Flag } from "./components/Flag";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Field
+        initalState={"flagged"}
+        nearMines={1}
+        hasMine={false}
+        onOpen={() => {}}
+        onHold={() => {}}
+      />
+      <Field
+        initalState={"closed"}
+        nearMines={2}
+        hasMine={false}
+        onOpen={() => {}}
+        onHold={() => {}}
+      />
+      <Field
+        initalState={"closed"}
+        nearMines={3}
+        hasMine={true}
+        onOpen={() => {}}
+        onHold={() => {}}
+      />
+      <Field
+        initalState={"opened"}
+        nearMines={4}
+        hasMine={true}
+        onOpen={() => {}}
+        onHold={() => {}}
+      />
+      <Field
+        initalState={"opened"}
+        nearMines={4}
+        hasMine={false}
+        onOpen={() => {}}
+        onHold={() => {}}
+      />
+
+      <Flag bigger />
+    </>
   );
 }
 
