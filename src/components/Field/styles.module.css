@@ -6,21 +6,21 @@
 
 .closed,
 .flagged {
-  background-color: #3986b8;
-  border-left-color: #37a2db;
-  border-top-color: #37a2db;
-  border-right-color: #1c4966;
-  border-bottom-color: #1c4966;
+  background-color: var(--primary);
+  border-left-color: var(--primaryLight);
+  border-top-color: var(--primaryLight);
+  border-right-color: var(--primaryDark);
+  border-bottom-color: var(--primaryDark);
   border-width: 5px;
 }
 
 .opened {
-  background-color: #7ebfe2;
-  border-width: 2px;
-  border-color: #3986b8;
   display: flex;
   align-items: center;
   justify-content: center;
+  background-color: var(--primaryLighter);
+  border-color: var(--primary);
+  border-width: 2px;
 }
 
 .exploded {

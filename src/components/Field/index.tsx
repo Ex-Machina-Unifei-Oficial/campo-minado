@@ -1,5 +1,3 @@
-import { MouseEventHandler, useEffect, useState } from "react";
-
 import { Flag } from "../Flag";
 import { Mine } from "../Mine";
 

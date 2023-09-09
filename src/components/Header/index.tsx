@@ -1,44 +1,30 @@
-// import React from "react";
-// import Ionicons from "react-native-vector-icons/Ionicons";
+import { Flag } from "../Flag";
 
-// import params from "../../utils/params";
-// import themes from "../../themes";
-// import Flag from "../Flag";
+import styles from "./styles.module.css";
 
-// import { Container, FlagContainer, FlagButton, Label, Button } from "./styles";
+type HeaderProps = {
+  onNewGame: () => void;
+  onDifficulty: () => void;
+  flagsLeft: number;
+};
 
-// type HeaderProps = {
-//   onNewGame: () => void;
-//   onNewGameLongPress: () => void;
-//   onFlagPress: () => void;
-//   onMenu: () => void;
-//   flagsLeft: number;
-// };
+export const Header = ({ onNewGame, onDifficulty, flagsLeft }: HeaderProps) => {
+  return (
+    <div className={styles.container}>
+      <button className={styles.button} onClick={onDifficulty}>
+        Dificuldade
+      </button>
 
-// export default (props: HeaderProps) => {
-//   return (
-//     <Container>
-//       <Button onPress={props.onMenu}>
-//         <Ionicons
-//           name="menu"
-//           size={30}
-//           color={themes[params.theme].colors.textPrimary}
-//         />
-//       </Button>
-//       <Button
-//         onPress={props.onNewGame}
-//         onLongPress={props.onNewGameLongPress}
-//         delayLongPress={1000}
-//       >
-//         <Label>Novo Jogo</Label>
-//       </Button>
-//       <FlagContainer>
-//         <FlagButton onPress={props.onFlagPress}>
-//           <Flag bigger />
-//         </FlagButton>
-//         <Label>= {props.flagsLeft}</Label>
-//       </FlagContainer>
-//     </Container>
-//   );
-// };
-export {};
+      <button className={styles.button} onClick={onNewGame}>
+        Novo Jogo
+      </button>
+
+      <div className={styles.flagContainer}>
+        <div className={styles.flagButton}>
+          <Flag bigger />
+        </div>
+        <h1 className={styles.label}>= {flagsLeft}</h1>
+      </div>
+    </div>
+  );
+};

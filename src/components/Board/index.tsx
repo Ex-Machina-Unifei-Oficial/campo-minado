@@ -5,29 +5,29 @@ import styles from "./styles.module.css";
 
 type BoardProps = {
   board: BoardObj;
-  onLeftClick: (r: number, c: number) => void;
+  onLeftClick: (row: number, col: number) => void;
   onRightClick: (
-    r: number,
-    c: number,
+    row: number,
+    col: number,
     event: React.MouseEvent<HTMLElement, MouseEvent>
   ) => void;
 };
 
 export const Board = ({ board, onLeftClick, onRightClick }: BoardProps) => {
-  const rows = board.map((row, r) => {
-    const columns = row.map((field, c) => {
+  const rows = board.map((row, rowIndex) => {
+    const columns = row.map((field, colIndex) => {
       return (
         <Field
           {...field}
-          key={c}
-          onLeftClick={() => onLeftClick(r, c)}
-          onRightClick={(e) => onRightClick(r, c, e)}
+          key={colIndex}
+          onLeftClick={() => onLeftClick(rowIndex, colIndex)}
+          onRightClick={(e) => onRightClick(rowIndex, colIndex, e)}
         />
       );
     });
 
     return (
-      <div className={styles.fieldColumns} key={r}>
+      <div className={styles.fieldColumns} key={rowIndex}>
         {columns}
       </div>
     );

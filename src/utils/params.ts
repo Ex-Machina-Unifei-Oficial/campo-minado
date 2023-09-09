@@ -10,7 +10,7 @@ interface Params {
 }
 
 const params: Params = {
-  headerRatio: 0.1,
+  headerRatio: 0.15,
   mineDensity: 0.2,
 
   getColumnsAmount() {

@@ -1,21 +1,15 @@
 .container {
-  background-color: #def;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  background-color: var(--background);
+  margin-bottom: 5px;
+  margin-top: 5px;
 }
 
 .fieldRows {
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
-  max-height: 99%;
 }
 
 .fieldColumns {
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  max-width: 99%;
 }

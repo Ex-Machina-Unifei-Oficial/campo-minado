@@ -6,13 +6,24 @@ type FlagProps = {
 
 export const Flag = ({ bigger }: FlagProps) => (
   <div className={styles.container}>
-    <div className={bigger ? styles.poleBigger : styles.pole} />
-    <div
-      className={bigger ? styles.poleHighlightBigger : styles.poleHighlight}
-    />
-    <div className={bigger ? styles.base1Bigger : styles.base1} />
-    <div className={bigger ? styles.base2Bigger : styles.base2} />
-    <div className={bigger ? styles.flagBigger : styles.flag} />
-    <div className={bigger ? styles.flagShadowBigger : styles.flagShadow} />
+    {bigger ? (
+      <>
+        <div className={styles.poleBigger} />
+        <div className={styles.poleHighlightBigger} />
+        <div className={styles.base1Bigger} />
+        <div className={styles.base2Bigger} />
+        <div className={styles.flagBigger} />
+        <div className={styles.flagShadowBigger} />
+      </>
+    ) : (
+      <>
+        <div className={styles.pole} />
+        <div className={styles.poleHighlight} />
+        <div className={styles.base1} />
+        <div className={styles.base2} />
+        <div className={styles.flag} />
+        <div className={styles.flagShadow} />
+      </>
+    )}
   </div>
 );

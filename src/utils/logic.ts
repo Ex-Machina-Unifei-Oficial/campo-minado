@@ -1,6 +1,6 @@
 export type FieldState = "closed" | "opened" | "flagged";
 
-type Field = {
+export type Field = {
   row: number;
   column: number;
   state: FieldState;
@@ -8,7 +8,7 @@ type Field = {
   nearMines: number;
 };
 
-type Board = Field[][];
+export type Board = Field[][];
 
 const createBoard = (rows: number, columns: number): Board => {
   return Array(rows)
@@ -152,8 +152,6 @@ const showMines = (board: Board): void =>
 
 const flagsUsed = (board: Board): number =>
   fields(board).filter((field) => field.state === "flagged").length;
-
-export type { Board };
 
 export {
   createMinedBoard,
