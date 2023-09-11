@@ -1,21 +1,39 @@
+import { useState } from "react";
+
 import { Flag } from "../Flag";
+import { ModeMenu } from "../ModeMenu";
+import { params } from "../../utils/params";
+import { GameMode } from "../../utils/logic";
 
 import styles from "./styles.module.css";
 
 type HeaderProps = {
-  onNewGame: () => void;
-  onDifficulty: () => void;
+  newGame: () => void;
   flagsLeft: number;
 };
 
-export const Header = ({ onNewGame, onDifficulty, flagsLeft }: HeaderProps) => {
+export const Header = ({ newGame, flagsLeft }: HeaderProps) => {
+  const [showMenu, setShowMenu] = useState(false);
+
+  const setMode = (mode: GameMode) => {
+    params.mineDensity.current = params.mineDensity[mode];
+    setShowMenu(false);
+    newGame();
+  };
+
   return (
     <div className={styles.container}>
-      <button className={styles.button} onClick={onDifficulty}>
-        Dificuldade
-      </button>
+      <div className={styles.dropdown}>
+        <button
+          className={styles.button}
+          onClick={() => setShowMenu((show) => !show)}
+        >
+          Dificuldade
+        </button>
+        {showMenu && <ModeMenu setMode={setMode} />}
+      </div>
 
-      <button className={styles.button} onClick={onNewGame}>
+      <button className={styles.button} onClick={newGame}>
         Novo Jogo
       </button>
 

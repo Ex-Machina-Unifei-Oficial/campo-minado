@@ -1,12 +1,10 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Board } from "../../components/Board";
 import { Header } from "../../components/Header";
-import { LevelSelect } from "../../components/LevelSelect";
 
-import params from "../../utils/params";
 import {
-  createMinedBoard,
+  Board as BoardObj,
   cloneBoard,
   openField,
   toggleFlag,
@@ -15,63 +13,52 @@ import {
   wonGame,
   showMines,
   flagsUsed,
+  newBoard,
+  minesQuantity,
 } from "../../utils/logic";
 
 import styles from "./styles.module.css";
 
+type GameState = "playing" | "win" | "lose";
+
 export const Home = () => {
-  const minesQuantity = () => {
-    const rows = params.getRowsAmount();
-    const cols = params.getColumnsAmount();
-    return Math.ceil(rows * cols * params.mineDensity);
-  };
-
-  const newBoard = () =>
-    createMinedBoard(
-      params.getRowsAmount(),
-      params.getColumnsAmount(),
-      minesQuantity()
-    );
-
   const [board, setBoard] = useState(newBoard());
-  const [won, setWon] = useState(false);
-  const [lost, setLost] = useState(false);
-  const [showDificulty, setShowDifficulty] = useState(false);
+  const [gameState, setGameState] = useState<GameState>("playing");
 
-  const gameOver = (status: "win" | "lose") => {
-    const message =
-      status == "win" ? "Você Venceu! Parabéns!" : "Você Perdeu! Que Pena!";
+  useEffect(() => {
+    if (gameState === "lose") {
+      setTimeout(() => {
+        alert("Você Perdeu! Que Pena!");
+      }, 100);
+    }
 
-    setTimeout(() => {
-      alert(message);
-    }, 500);
-  };
+    if (gameState === "win") {
+      setTimeout(() => {
+        alert("Você Venceu! Parabéns!");
+      }, 100);
+    }
+  }, [gameState]);
 
   const newGame = () => {
     setBoard(newBoard());
-    setWon(false);
-    setLost(false);
+    setGameState("playing");
+  };
+
+  const checkGameState = (boardClone: BoardObj) => {
+    if (hadExplosion(boardClone)) {
+      showMines(boardClone);
+      setGameState("lose");
+    }
+    if (wonGame(boardClone)) setGameState("win");
   };
 
   const onLeftClick = (row: number, column: number): void => {
-    if (won || lost) return;
+    if (gameState != "playing") return;
 
     const boardClone = cloneBoard(board);
     openField(boardClone, row, column);
-    const hasLost = hadExplosion(boardClone);
-    const hasWon = wonGame(boardClone);
-
-    if (hasLost) {
-      showMines(boardClone);
-      gameOver("lose");
-    }
-    if (hasWon) {
-      gameOver("win");
-    }
-
+    checkGameState(boardClone);
     setBoard(boardClone);
-    setLost(hasLost);
-    setWon(hasWon);
   };
 
   const onRightClick = (
@@ -80,52 +67,23 @@ export const Home = () => {
     event: React.MouseEvent<HTMLElement, MouseEvent>
   ): void => {
     event.preventDefault();
-    if (won || lost) return;
+    if (gameState != "playing") return;
 
     const boardClone = cloneBoard(board);
-    if (board[row][column].state === "opened")
+    if (board[row][column].state === "opened") {
       openRemainingNeighbors(boardClone, row, column);
-    else toggleFlag(boardClone, row, column);
-
-    const hasWon = wonGame(boardClone);
-    const hasLost = hadExplosion(boardClone);
-
-    if (hasWon) {
-      gameOver("win");
+    } else {
+      toggleFlag(boardClone, row, column);
     }
-
-    if (hasLost) {
-      showMines(boardClone);
-      gameOver("lose");
-    }
-
+    checkGameState(boardClone);
     setBoard(boardClone);
-    setWon(hasWon);
-    setLost(hasLost);
-  };
-
-  const onLevelSelected = (level: number) => {
-    if (level === params.mineDensity) {
-      setShowDifficulty(false);
-      return;
-    }
-
-    params.mineDensity = level;
-    setShowDifficulty(false);
-    newGame();
   };
 
   return (
     <div className={styles.container}>
       <Header
         flagsLeft={minesQuantity() - flagsUsed(board)}
-        onNewGame={newGame}
-        onDifficulty={() => setShowDifficulty((prevState) => !prevState)}
-      />
-
-      <LevelSelect
-        isVisible={showDificulty}
-        onLevelSelected={onLevelSelected}
+        newGame={newGame}
       />
 
       <Board

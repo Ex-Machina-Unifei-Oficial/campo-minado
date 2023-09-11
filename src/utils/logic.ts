@@ -1,3 +1,5 @@
+import { params } from "./params";
+
 export type FieldState = "closed" | "opened" | "flagged";
 
 export type Field = {
@@ -9,6 +11,8 @@ export type Field = {
 };
 
 export type Board = Field[][];
+
+export type GameMode = "easy" | "medium" | "hard";
 
 const createBoard = (rows: number, columns: number): Board => {
   return Array(rows)
@@ -153,6 +157,19 @@ const showMines = (board: Board): void =>
 const flagsUsed = (board: Board): number =>
   fields(board).filter((field) => field.state === "flagged").length;
 
+const minesQuantity = () => {
+  const rows = params.getRowsAmount();
+  const cols = params.getColumnsAmount();
+  return Math.ceil(rows * cols * params.mineDensity.current);
+};
+
+const newBoard = () =>
+  createMinedBoard(
+    params.getRowsAmount(),
+    params.getColumnsAmount(),
+    minesQuantity()
+  );
+
 export {
   createMinedBoard,
   cloneBoard,
@@ -163,4 +180,6 @@ export {
   wonGame,
   showMines,
   flagsUsed,
+  minesQuantity,
+  newBoard,
 };

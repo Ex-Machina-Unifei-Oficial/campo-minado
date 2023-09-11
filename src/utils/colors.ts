@@ -19,7 +19,7 @@ export const colors = {
     "#58566b",
   ],
 
-  levelSelect: {
+  modeButtons: {
     easy: "#359c69",
     medium: "#dddd88",
     hard: "#c04b4b",

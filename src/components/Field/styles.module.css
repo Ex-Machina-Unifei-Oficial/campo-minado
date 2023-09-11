@@ -18,7 +18,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--primaryLighter);
+  background-color: var(--secondary);
   border-color: var(--primary);
   border-width: 2px;
 }
