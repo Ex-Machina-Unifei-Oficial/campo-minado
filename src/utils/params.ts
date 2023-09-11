@@ -26,3 +26,5 @@ export const params: Params = {
     return Math.floor(boardHeight / 30);
   },
 };
+
+params.mineDensity.current = params.mineDensity.medium;

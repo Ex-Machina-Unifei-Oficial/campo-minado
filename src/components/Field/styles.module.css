@@ -18,15 +18,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--secondary);
+  background-color: var(--opened);
   border-color: var(--primary);
   border-width: 2px;
 }
 
 .exploded {
   border-width: 2px;
-  background-color: #d40;
-  border-color: #b20;
+  background-color: var(--exploded);
+  border-color: var(--explodedDark);
 }
 
 .field {

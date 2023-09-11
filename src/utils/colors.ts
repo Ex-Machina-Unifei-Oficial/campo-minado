@@ -1,13 +1,4 @@
 export const colors = {
-  background: "#def",
-
-  primary: "#3986b8",
-  primaryLight: "#37a2db",
-  primaryLighter: "#55b6fe",
-  primaryDark: "#1c4966",
-
-  secondary: "#7ebfe2",
-
   fieldLabels: [
     "#2f62ec",
     "#27a137",
@@ -24,6 +15,4 @@ export const colors = {
     medium: "#dddd88",
     hard: "#c04b4b",
   },
-
-  text: "#234",
 };

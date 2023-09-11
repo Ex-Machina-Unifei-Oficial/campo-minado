@@ -1,12 +1,3 @@
-body {
-  margin: 0;
-  font-family: "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
-    "Droid Sans", "Helvetica Neue", sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  background: var(--background);
-}
-
 :root {
   --background: #def;
 
@@ -15,7 +6,19 @@ body {
   --primaryLighter: #55b6fe;
   --primaryDark: #1c4966;
 
-  --secondary: #7ebfe2;
+  --opened: #7ebfe2;
+
+  --exploded: #d40;
+  --explodedDark: #b20;
 
   --text: #234;
+}
+
+body {
+  margin: 0;
+  font-family: "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans",
+    "Droid Sans", "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background);
 }

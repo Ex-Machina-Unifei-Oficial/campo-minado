@@ -11,7 +11,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background-color: #def;
+  background-color: var(--background);
   padding: 10px;
   border-width: 3px;
   border-color: var(--primaryDark);
